@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
+import LoadingScreen from './components/LoadingScreen'
 import Dashboard from './pages/Dashboard'
 import Interventions from './pages/Interventions'
 import Clients from './pages/Clients'
@@ -86,6 +87,7 @@ function App() {
 
   return (
     <Router>
+      <LoadingScreen />
       <ScrollToTop />
       <div className="App">
         <div className="app-background" aria-hidden="true">

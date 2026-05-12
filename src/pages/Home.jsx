@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import ScrollingGallery from '../components/ScrollingGallery'
 import Testimonials from '../components/Testimonials'
 import FAQ from '../components/FAQ'
 import ServiceArea from '../components/ServiceArea'
+import SectionDivider from '../components/SectionDivider'
 import heroSupport from '../assets/hero-support.svg'
 import './Page.css'
 
 function Home() {
   const [supportStatus, setSupportStatus] = useState('En ligne')
+  useScrollAnimation()
 
   useEffect(() => {
     const statuses = ['En ligne', 'Intervention en cours', 'Disponible']
@@ -23,7 +26,7 @@ function Home() {
     <div className="page">
       <div className="container">
         <div className="hero hero-layout">
-          <div className="hero-copy">
+          <div className="hero-copy scroll-animate-left">
             <div className="status-badge">
               <span className="status-dot"></span>
               Support : {supportStatus}
@@ -44,7 +47,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="hero-visual">
+          <div className="hero-visual scroll-animate-right">
             <img
               src={heroSupport}
               alt="Illustration d'un support informatique avec ordinateur et assistance"
@@ -54,50 +57,55 @@ function Home() {
         </div>
 
         <section className="stats-grid" aria-label="Points forts">
-          <div className="stat-card">
+          <div className="stat-card scroll-animate-scale delay-1">
             <strong>⚡ Intervention rapide</strong>
             <span>Sous 24h ou assistance immédiate à distance</span>
           </div>
-          <div className="stat-card">
+          <div className="stat-card scroll-animate-scale delay-2">
             <strong>🛠️ Experts certifiés</strong>
             <span>Techniciens qualifiés et expérimentés</span>
           </div>
-          <div className="stat-card">
+          <div className="stat-card scroll-animate-scale delay-3">
             <strong>💰 Tarifs transparents</strong>
             <span>Devis gratuit et sans surprise</span>
           </div>
         </section>
 
+        <SectionDivider />
+
         <ScrollingGallery />
 
+        <SectionDivider />
+
         <section className="features">
-          <div className="feature-card">
+          <div className="feature-card scroll-animate delay-1">
             <h3>🖥️ Dépannage PC & Mac</h3>
             <p>Réparation matérielle et logicielle, diagnostic complet, récupération de données</p>
           </div>
-          <div className="feature-card">
+          <div className="feature-card scroll-animate delay-2">
             <h3>🔧 Maintenance</h3>
             <p>Nettoyage, optimisation, mise à jour système et sécurité</p>
           </div>
-          <div className="feature-card">
+          <div className="feature-card scroll-animate delay-3">
             <h3>🌐 Réseau & Internet</h3>
             <p>Installation WiFi, configuration réseau, dépannage connexion</p>
           </div>
-          <div className="feature-card">
+          <div className="feature-card scroll-animate delay-1">
             <h3>🔒 Sécurité</h3>
             <p>Antivirus, protection données, suppression malwares</p>
           </div>
-          <div className="feature-card">
+          <div className="feature-card scroll-animate delay-2">
             <h3>📱 Smartphones & Tablettes</h3>
             <p>Configuration, synchronisation, résolution de problèmes</p>
           </div>
-          <div className="feature-card">
+          <div className="feature-card scroll-animate delay-3">
             <h3>💾 Sauvegarde</h3>
             <p>Mise en place de solutions de backup automatiques</p>
           </div>
         </section>
 
-        <section className="highlight-panel">
+        <section className="highlight-panel scroll-animate">
+
           <div>
             <h2>Pourquoi choisir CDOC Support ?</h2>
             <p>
@@ -112,7 +120,9 @@ function Home() {
       </div>
 
       <Testimonials />
+      <SectionDivider />
       <ServiceArea />
+      <SectionDivider />
       <FAQ />
     </div>
   )
