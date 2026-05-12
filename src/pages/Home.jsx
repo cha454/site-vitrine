@@ -77,20 +77,20 @@ function Home() {
           </div>
         </div>
 
-        <section className="stats-grid" aria-label="Points forts">
+        <div className="stats-grid" aria-label="Points forts">
           <div className="stat-card scroll-animate-scale delay-1">
-            <strong>⚡ Intervention rapide</strong>
-            <span>Sous 24h ou assistance immédiate à distance</span>
+            <h3>⚡ Intervention rapide</h3>
+            <p>Sous 24h ou assistance immédiate à distance</p>
           </div>
           <div className="stat-card scroll-animate-scale delay-2">
-            <strong>🛠️ Experts certifiés</strong>
-            <span>Techniciens qualifiés et expérimentés</span>
+            <h3>🛡️ Garantie 3 mois</h3>
+            <p>Toutes nos réparations sont garanties</p>
           </div>
           <div className="stat-card scroll-animate-scale delay-3">
-            <strong>💰 Tarifs transparents</strong>
-            <span>Devis gratuit et sans surprise</span>
+            <h3>💰 Tarifs Clairs</h3>
+            <p>Pas de mauvaise surprise : prix fixes à partir de 15 000 FCFA</p>
           </div>
-        </section>
+        </div>
 
         <SectionDivider />
 

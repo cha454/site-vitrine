@@ -94,7 +94,7 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
                   <span className="row-client">{item.client}</span>
                   <span className="row-problem">{item.problem}</span>
                   <span className="row-date">{item.date}</span>
-                  <span className="row-price">{item.price}€</span>
+                  <span className="row-price">{item.price} FCFA</span>
                   <div className="row-actions">
                     <span className={`row-status ${getStatusTone(item.status)}`}>
                       {item.status}
@@ -144,7 +144,7 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Prix (€)</label>
+                  <label>Prix (FCFA)</label>
                   <input 
                     type="number" 
                     value={newInter.price}

@@ -56,7 +56,7 @@ function ServiceArea() {
             <span className="info-icon">💰</span>
             <div>
               <strong>Frais supplémentaires</strong>
-              <p>Au-delà de 20km : 0,50€/km</p>
+              <p>Au-delà de 20km : 500 FCFA/km</p>
             </div>
           </div>
           <div className="info-card">

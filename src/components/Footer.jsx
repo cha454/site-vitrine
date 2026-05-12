@@ -24,8 +24,8 @@ function Footer({ activeCount = 0, urgentCount = 0, clientCount = 0, monthlyReve
                 <span>tickets urgents</span>
               </div>
               <div>
-                <strong>{monthlyRevenue} EUR</strong>
-                <span>revenu realise</span>
+                <strong>{monthlyRevenue.toLocaleString()} FCFA</strong>
+                <span>revenu réalisé</span>
               </div>
             </div>
           </div>
@@ -36,6 +36,7 @@ function Footer({ activeCount = 0, urgentCount = 0, clientCount = 0, monthlyReve
               <li><Link to="/">Tableau de bord</Link></li>
               <li><Link to="/interventions">Interventions</Link></li>
               <li><Link to="/clients">Clients</Link></li>
+              <li><Link to="/suivi">Suivi d'intervention</Link></li>
             </ul>
           </div>
 

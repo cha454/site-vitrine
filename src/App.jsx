@@ -7,6 +7,7 @@ import LoadingScreen from './components/LoadingScreen'
 import Dashboard from './pages/Dashboard'
 import Interventions from './pages/Interventions'
 import Clients from './pages/Clients'
+import Tracking from './pages/Tracking'
 import './App.css'
 
 // Composant pour gérer les transitions et le scroll
@@ -28,9 +29,9 @@ function App() {
   const [interventions, setInterventions] = useState(() => {
     const saved = localStorage.getItem('interventions')
     return saved ? JSON.parse(saved) : [
-      { id: 1, client: "Jean Dupont", problem: "Écran bleu", status: "En cours", date: "2024-05-11", price: 60 },
-      { id: 2, client: "Marie Curie", problem: "Installation Windows", status: "Terminé", date: "2024-05-10", price: 80 },
-      { id: 3, client: "Albert Einstein", problem: "Récupération de données", status: "Urgent", date: "2024-05-11", price: 120 }
+      { id: 1, client: "Jean Dupont", problem: "Écran bleu", status: "En cours", date: "2024-05-11", price: 25000 },
+      { id: 2, client: "Marie Curie", problem: "Installation Windows", status: "Terminé", date: "2024-05-10", price: 30000 },
+      { id: 3, client: "Albert Einstein", problem: "Récupération de données", status: "Urgent", date: "2024-05-11", price: 50000 }
     ]
   })
 
@@ -124,8 +125,8 @@ function App() {
             <div className="shell-feed" aria-label="Indicateurs rapides">
               <span>{todayLabel}</span>
               <span>{currentTime}</span>
-              <span>{monthlyRevenue} EUR factures</span>
-              <span>{urgentCount} priorites critiques</span>
+              <span>{monthlyRevenue.toLocaleString()} FCFA facturés</span>
+              <span>{urgentCount} priorités critiques</span>
             </div>
           </div>
         </div>
@@ -140,6 +141,7 @@ function App() {
             <Route path="/" element={<PageWrapper><Dashboard interventions={interventions} clients={clients} /></PageWrapper>} />
             <Route path="/interventions" element={<PageWrapper><Interventions interventions={interventions} onAdd={addIntervention} onDelete={deleteIntervention} onUpdateStatus={updateInterventionStatus} /></PageWrapper>} />
             <Route path="/clients" element={<PageWrapper><Clients clients={clients} interventions={interventions} /></PageWrapper>} />
+            <Route path="/suivi" element={<PageWrapper><Tracking interventions={interventions} /></PageWrapper>} />
           </Routes>
         </main>
         <Footer

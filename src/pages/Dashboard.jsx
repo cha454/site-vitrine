@@ -58,7 +58,7 @@ function Dashboard({ interventions, clients }) {
             <div className="stat-icon">💶</div>
             <div className="stat-info">
               <span className="stat-label">Revenu</span>
-              <strong className="stat-value">{totalRevenue}€</strong>
+              <strong className="stat-value">{totalRevenue} FCFA</strong>
             </div>
           </div>
           <div className="stat-card scroll-animate-scale delay-2">
@@ -118,7 +118,7 @@ function Dashboard({ interventions, clients }) {
                   <span className="row-client">{item.client}</span>
                   <span className="row-problem">{item.problem}</span>
                   <span className="row-date">{item.date}</span>
-                  <span className="row-price">{item.price}€</span>
+                  <span className="row-price">{item.price} FCFA</span>
                   <span className={`row-status ${getStatusTone(item.status)}`}>
                     {item.status}
                   </span>

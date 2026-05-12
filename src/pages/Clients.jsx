@@ -96,7 +96,7 @@ function Clients({ clients, interventions, onAdd, onDelete }) {
                   <div className="client-mini-stats">
                     <div className="mini-stat">
                       <span>Total facturé</span>
-                      <strong>{stats.spent}€</strong>
+                      <strong>{stats.spent} FCFA</strong>
                     </div>
                     <div className="mini-stat">
                       <span>Dernière visite</span>

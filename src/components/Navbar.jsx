@@ -11,6 +11,7 @@ function Navbar({ activeCount = 0, urgentCount = 0, clientCount = 0 }) {
     { to: '/', label: 'Tableau de bord', end: true },
     { to: '/interventions', label: 'Interventions' },
     { to: '/clients', label: 'Clients' },
+    { to: '/suivi', label: 'Suivi Client' },
   ]
 
   return (

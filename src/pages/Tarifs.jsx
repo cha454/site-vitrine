@@ -12,9 +12,9 @@ function Tarifs() {
       category: "Dépannage à domicile",
       items: [
         { service: "Diagnostic et devis", price: "Gratuit" },
-        { service: "Intervention standard (1h)", price: "60€" },
-        { service: "Intervention urgente (-24h)", price: "90€" },
-        { service: "Forfait demi-journée (4h)", price: "200€" },
+        { service: "Intervention standard (1h)", price: "25 000 FCFA" },
+        { service: "Intervention urgente (-24h)", price: "40 000 FCFA" },
+        { service: "Forfait demi-journée (4h)", price: "80 000 FCFA" },
         { service: "Déplacement (dans un rayon de 20km)", price: "Inclus" }
       ]
     },
@@ -22,30 +22,30 @@ function Tarifs() {
       id: 2,
       category: "Assistance à distance",
       items: [
-        { service: "Intervention courte (-30min)", price: "30€" },
-        { service: "Intervention standard (1h)", price: "45€" },
-        { service: "Forfait 5 heures", price: "200€" },
-        { service: "Abonnement mensuel (2h/mois)", price: "80€/mois" }
+        { service: "Intervention courte (-30min)", price: "10 000 FCFA" },
+        { service: "Intervention standard (1h)", price: "18 000 FCFA" },
+        { service: "Forfait 5 heures", price: "80 000 FCFA" },
+        { service: "Abonnement mensuel (2h/mois)", price: "30 000 FCFA/mois" }
       ]
     },
     {
       id: 3,
       category: "Prestations spécifiques",
       items: [
-        { service: "Installation système d'exploitation", price: "80€" },
-        { service: "Récupération de données", price: "À partir de 120€" },
-        { service: "Nettoyage virus/malware", price: "70€" },
-        { service: "Configuration réseau WiFi", price: "60€" },
-        { service: "Sauvegarde et transfert de données", price: "50€" },
-        { service: "Formation personnalisée (1h)", price: "50€" }
+        { service: "Installation système d'exploitation", price: "30 000 FCFA" },
+        { service: "Récupération de données", price: "À partir de 50 000 FCFA" },
+        { service: "Nettoyage virus/malware", price: "25 000 FCFA" },
+        { service: "Configuration réseau WiFi", price: "20 000 FCFA" },
+        { service: "Sauvegarde et transfert de données", price: "15 000 FCFA" },
+        { service: "Formation personnalisée (1h)", price: "15 000 FCFA" }
       ]
     },
     {
       id: 4,
       category: "Contrats de maintenance",
       items: [
-        { service: "Particulier (1 visite/trimestre)", price: "150€/an" },
-        { service: "Professionnel (1 visite/mois)", price: "500€/an" },
+        { service: "Particulier (1 visite/trimestre)", price: "60 000 FCFA/an" },
+        { service: "Professionnel (1 visite/mois)", price: "200 000 FCFA/an" },
         { service: "Entreprise (support prioritaire)", price: "Sur devis" }
       ]
     }
@@ -56,7 +56,7 @@ function Tarifs() {
       <div className="container">
         <h1 className="scroll-animate">💰 Nos Tarifs</h1>
         <p className="blog-intro scroll-animate">
-          Tarifs transparents et sans surprise. Tous nos prix sont TTC.
+          Tarifs transparents et sans surprise. Tous nos prix sont nets.
         </p>
 
         <section className="visual-panel visual-panel-accent scroll-animate">
@@ -98,9 +98,9 @@ function Tarifs() {
         <section className="about-section important-note scroll-animate">
           <h2>ℹ️ Informations importantes</h2>
           <ul className="values-list">
-            <li className="scroll-animate-left delay-1">Tous les tarifs sont TTC (TVA 20%)</li>
+            <li className="scroll-animate-left delay-1">Tous les tarifs sont en FCFA</li>
             <li className="scroll-animate-left delay-2">Devis gratuit et sans engagement</li>
-            <li className="scroll-animate-left delay-3">Paiement par CB, espèces ou virement</li>
+            <li className="scroll-animate-left delay-3">Paiement par CB, Mobile Money ou espèces</li>
             <li className="scroll-animate-left delay-4">Garantie 3 mois sur toutes nos interventions</li>
             <li className="scroll-animate-left delay-5">Tarifs dégressifs pour les professionnels</li>
             <li className="scroll-animate-left delay-1">Possibilité de forfaits personnalisés</li>
