@@ -13,10 +13,10 @@ function Login() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  // Rediriger si déjà connecté
+  // Rediriger vers le cockpit si déjà connecté
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) navigate('/')
+      if (user) navigate('/admin')
     })
     return () => unsubscribe()
   }, [navigate])
@@ -27,7 +27,7 @@ function Login() {
     setError('')
     try {
       await signInWithEmailAndPassword(auth, email, password)
-      navigate('/')
+      navigate('/admin')
     } catch (err) {
       setError('Identifiants invalides. Veuillez réessayer.')
     } finally {
