@@ -10,6 +10,7 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
   const [filter, setFilter] = useState('Tous')
   const [newInter, setNewInter] = useState({
     client: '',
+    clientEmail: '',
     problem: '',
     status: 'En cours',
     date: new Date().toISOString().split('T')[0],
@@ -27,6 +28,7 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
     onAdd(newInter)
     setNewInter({
       client: '',
+      clientEmail: '',
       problem: '',
       status: 'En cours',
       date: new Date().toISOString().split('T')[0],
@@ -123,15 +125,26 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
             <button className="close-btn" onClick={() => setShowForm(false)}>&times;</button>
             <h2>Nouvelle Intervention</h2>
             <form onSubmit={handleSubmit} className="contact-form">
-              <div className="form-group">
-                <label>Nom du client</label>
-                <input 
-                  type="text" 
-                  required 
-                  value={newInter.client}
-                  onChange={e => setNewInter({...newInter, client: e.target.value})}
-                  placeholder="Ex: Jean Dupont"
-                />
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Nom du client</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={newInter.client}
+                    onChange={e => setNewInter({...newInter, client: e.target.value})}
+                    placeholder="Ex: Jean Dupont"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email du client (pour suivi)</label>
+                  <input 
+                    type="email" 
+                    value={newInter.clientEmail}
+                    onChange={e => setNewInter({...newInter, clientEmail: e.target.value})}
+                    placeholder="jean@exemple.com"
+                  />
+                </div>
               </div>
               <div className="form-group">
                 <label>Description du problème</label>

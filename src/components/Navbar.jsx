@@ -2,15 +2,17 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import './Navbar.css'
 
-function Navbar({ activeCount = 0, urgentCount = 0, clientCount = 0 }) {
+function Navbar({ activeCount = 0, urgentCount = 0, clientCount = 0, user, onLogout }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const closeMenu = () => setIsMenuOpen(false)
 
-  const links = [
+  const links = user ? [
     { to: '/', label: 'Tableau de bord', end: true },
     { to: '/interventions', label: 'Interventions' },
     { to: '/clients', label: 'Clients' },
+    { to: '/suivi', label: 'Suivi Client' },
+  ] : [
     { to: '/suivi', label: 'Suivi Client' },
   ]
 
@@ -22,15 +24,16 @@ function Navbar({ activeCount = 0, urgentCount = 0, clientCount = 0 }) {
             <span className="nav-logo-mark" aria-hidden="true">CM</span>
             <span className="nav-logo-copy">
               <strong>CDOC Manager</strong>
-              <small>Centre de pilotage interventions & clients</small>
+              <small>Centre de pilotage</small>
             </span>
           </NavLink>
 
-          <div className="nav-meta" aria-label="Résumé d'activité">
-            <span>{activeCount} interventions</span>
-            <span>{urgentCount} urgences</span>
-            <span>{clientCount} clients</span>
-          </div>
+          {user && (
+            <div className="nav-meta" aria-label="Résumé d'activité">
+              <span>{activeCount} interventions</span>
+              <span>{urgentCount} urgences</span>
+            </div>
+          )}
         </div>
 
         <button
@@ -64,6 +67,15 @@ function Navbar({ activeCount = 0, urgentCount = 0, clientCount = 0 }) {
               </NavLink>
             </li>
           ))}
+          {user ? (
+            <li className="nav-item">
+              <button onClick={onLogout} className="logout-btn">Déconnexion</button>
+            </li>
+          ) : (
+            <li className="nav-item">
+              <NavLink to="/login" className="nav-link" onClick={closeMenu}>Connexion</NavLink>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

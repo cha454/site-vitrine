@@ -1,27 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { db } from '../firebase'
+import { doc, getDoc } from 'firebase/firestore'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import SectionDivider from '../components/SectionDivider'
 import './Page.css'
 import './Tracking.css'
 
-function Tracking({ interventions }) {
+function Tracking() {
   useScrollAnimation()
   const [trackingNumber, setTrackingNumber] = useState('')
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleTrack = (e) => {
+  const handleTrack = async (e) => {
     e.preventDefault()
     setError('')
     setResult(null)
+    setLoading(true)
 
-    // Simulation de recherche par ID (numéro de dossier)
-    const found = interventions.find(i => i.id.toString().endsWith(trackingNumber) || i.id.toString() === trackingNumber)
+    try {
+      const docRef = doc(db, 'interventions', trackingNumber.trim())
+      const docSnap = await getDoc(docRef)
 
-    if (found) {
-      setResult(found)
-    } else {
-      setError('Aucun dossier trouvé avec ce numéro. Veuillez vérifier votre saisie.')
+      if (docSnap.exists()) {
+        setResult({ ...docSnap.data(), id: docSnap.id })
+      } else {
+        setError('Aucun dossier trouvé avec ce numéro. Veuillez vérifier votre saisie.')
+      }
+    } catch (err) {
+      setError('Une erreur est survenue lors de la recherche. Veuillez réessayer.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -61,7 +71,9 @@ function Tracking({ interventions }) {
                 onChange={(e) => setTrackingNumber(e.target.value)}
                 required
               />
-              <button type="submit" className="primary-btn">Suivre mon colis</button>
+              <button type="submit" className="primary-btn" disabled={loading}>
+                {loading ? 'Recherche...' : 'Suivre mon colis'}
+              </button>
             </form>
             {error && <p className="error-text">{error}</p>}
           </div>
