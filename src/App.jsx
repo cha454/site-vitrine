@@ -13,6 +13,11 @@ import Interventions from './pages/Interventions'
 import Clients from './pages/Clients'
 import Tracking from './pages/Tracking'
 import Login from './pages/Login'
+import Home from './pages/Home'
+import About from './pages/About'
+import Tarifs from './pages/Tarifs'
+import Blog from './pages/Blog'
+import Contact from './pages/Contact'
 import './App.css'
 
 // Composant pour gérer les transitions et le scroll
@@ -265,23 +270,31 @@ function App() {
         />
         <main className="app-content">
           <Routes>
+            {/* Routes Publiques */}
+            <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+            <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+            <Route path="/tarifs" element={<PageWrapper><Tarifs /></PageWrapper>} />
+            <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
+            <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
+            <Route path="/suivi" element={<PageWrapper><Tracking interventions={interventions} /></PageWrapper>} />
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={
+
+            {/* Routes Administration (Protégées) */}
+            <Route path="/admin" element={
               <ProtectedRoute>
                 <PageWrapper><Dashboard interventions={interventions} clients={clients} /></PageWrapper>
               </ProtectedRoute>
             } />
-            <Route path="/interventions" element={
+            <Route path="/admin/interventions" element={
               <ProtectedRoute>
                 <PageWrapper><Interventions interventions={interventions} onAdd={addIntervention} onDelete={deleteIntervention} onUpdateStatus={updateInterventionStatus} /></PageWrapper>
               </ProtectedRoute>
             } />
-            <Route path="/clients" element={
+            <Route path="/admin/clients" element={
               <ProtectedRoute>
                 <PageWrapper><Clients clients={clients} interventions={interventions} onAdd={addClient} onDelete={deleteClient} /></PageWrapper>
               </ProtectedRoute>
             } />
-            <Route path="/suivi" element={<PageWrapper><Tracking interventions={interventions} /></PageWrapper>} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
