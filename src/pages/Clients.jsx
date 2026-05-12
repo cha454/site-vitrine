@@ -8,6 +8,7 @@ function Clients({ clients, interventions, onAdd, onDelete }) {
   useScrollAnimation()
   const [showForm, setShowForm] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [newClient, setNewClient] = useState({
     name: '',
     email: '',
@@ -26,11 +27,23 @@ function Clients({ clients, interventions, onAdd, onDelete }) {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onAdd(newClient)
-    setNewClient({ name: '', email: '', phone: '', address: '', company: '' })
-    setShowForm(false)
+    if (isSubmitting) return
+    
+    setIsSubmitting(true)
+    try {
+      console.log("Tentative d'ajout du client:", newClient)
+      await onAdd(newClient)
+      setNewClient({ name: '', email: '', phone: '', address: '', company: '' })
+      setShowForm(false)
+      alert("Client enregistré avec succès !")
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du client:", error)
+      alert("Erreur lors de l'enregistrement. Vérifiez votre connexion ou les règles Firestore.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const filteredClients = clients.filter(c => 
@@ -165,7 +178,13 @@ function Clients({ clients, interventions, onAdd, onDelete }) {
                   placeholder="Nom de la société"
                 />
               </div>
-              <button type="submit" className="primary-btn w-full">Enregistrer le client</button>
+              <button 
+                type="submit" 
+                className="primary-btn w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Enregistrement...' : 'Enregistrer le client'}
+              </button>
             </form>
           </div>
         </div>

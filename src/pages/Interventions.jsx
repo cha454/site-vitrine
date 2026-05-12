@@ -8,6 +8,7 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
   useScrollAnimation()
   const [showForm, setShowForm] = useState(false)
   const [filter, setFilter] = useState('Tous')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [newInter, setNewInter] = useState({
     client: '',
     clientEmail: '',
@@ -23,18 +24,29 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
     return 'is-active'
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onAdd(newInter)
-    setNewInter({
-      client: '',
-      clientEmail: '',
-      problem: '',
-      status: 'En cours',
-      date: new Date().toISOString().split('T')[0],
-      price: 0
-    })
-    setShowForm(false)
+    if (isSubmitting) return
+
+    setIsSubmitting(true)
+    try {
+      await onAdd(newInter)
+      setNewInter({
+        client: '',
+        clientEmail: '',
+        problem: '',
+        status: 'En cours',
+        date: new Date().toISOString().split('T')[0],
+        price: 0
+      })
+      setShowForm(false)
+      alert("Intervention créée avec succès !")
+    } catch (error) {
+      console.error("Erreur lors de la création de l'intervention:", error)
+      alert("Erreur lors de l'enregistrement. Vérifiez les règles Firestore.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const filteredInterventions = interventions.filter(i => 
@@ -176,7 +188,13 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
                   </select>
                 </div>
               </div>
-              <button type="submit" className="primary-btn w-full">Créer la fiche</button>
+              <button 
+                type="submit" 
+                className="primary-btn w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Création en cours...' : 'Créer la fiche'}
+              </button>
             </form>
           </div>
         </div>
