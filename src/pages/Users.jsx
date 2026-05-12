@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { db } from '../firebase'
+import { db, auth } from '../firebase'
 import { collection, onSnapshot, deleteDoc, doc, updateDoc } from 'firebase/firestore'
+import { sendPasswordResetEmail } from 'firebase/auth'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import SectionDivider from '../components/SectionDivider'
 import './Page.css'
@@ -42,6 +43,18 @@ function Users() {
     }
   }
 
+  const handleResetPassword = async (email) => {
+    if (window.confirm(`Envoyer un email de réinitialisation de mot de passe à ${email} ?`)) {
+      try {
+        await sendPasswordResetEmail(auth, email)
+        alert(`Email de réinitialisation envoyé à ${email}`)
+      } catch (error) {
+        console.error("Error sending reset email:", error)
+        alert("Erreur lors de l'envoi de l'email : " + error.message)
+      }
+    }
+  }
+
   return (
     <div className="page interventions-page">
       <div className="container">
@@ -75,6 +88,14 @@ function Users() {
                     {user.verified ? 'Vérifié' : 'Non vérifié'}
                   </span>
                   <div className="row-actions">
+                    <button 
+                      className="primary-btn" 
+                      style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', background: '#10b981' }}
+                      onClick={() => handleResetPassword(user.email)}
+                      title="Réinitialiser le mot de passe"
+                    >
+                      🔑 Reset MDP
+                    </button>
                     <button 
                       className="primary-btn" 
                       style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}

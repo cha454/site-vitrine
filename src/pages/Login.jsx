@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { auth } from '../firebase'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
 import { useNavigate, Link } from 'react-router-dom'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import './Login.css'
@@ -35,6 +35,19 @@ function Login() {
       }
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError('Veuillez saisir votre email pour réinitialiser le mot de passe.')
+      return
+    }
+    try {
+      await sendPasswordResetEmail(auth, email.trim())
+      alert('Un email de réinitialisation a été envoyé à ' + email)
+    } catch (err) {
+      setError('Erreur : ' + err.message)
     }
   }
 
@@ -81,7 +94,14 @@ function Login() {
           
           <div className="login-footer">
             <p>Pas encore de compte ? <Link to="/register" style={{color: '#3b82f6', textDecoration: 'none'}}>S'inscrire</Link></p>
-            <p style={{marginTop: '0.5rem'}}>Mot de passe oublié ? Contactez l'administrateur.</p>
+            <p style={{marginTop: '0.5rem'}}>
+              <button 
+                onClick={handleForgotPassword} 
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.85rem', textDecoration: 'underline' }}
+              >
+                Mot de passe oublié ?
+              </button>
+            </p>
           </div>
         </div>
       </div>
