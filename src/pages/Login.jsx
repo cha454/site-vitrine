@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { auth } from '../firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import './Login.css'
 
 function Login() {
@@ -10,16 +11,28 @@ function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  
+  // Activer les animations
+  useScrollAnimation()
 
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      await signInWithEmailAndPassword(auth, email.trim(), password)
       navigate('/')
     } catch (err) {
-      setError('Identifiants invalides. Veuillez réessayer.')
+      console.error("Firebase Auth Error:", err.code, err.message)
+      if (err.code === 'auth/invalid-credential') {
+        setError('Identifiants invalides (Email ou Mot de passe incorrect).')
+      } else if (err.code === 'auth/user-not-found') {
+        setError('Aucun compte trouvé avec cet email.')
+      } else if (err.code === 'auth/wrong-password') {
+        setError('Mot de passe incorrect.')
+      } else {
+        setError(`Erreur d'authentification : ${err.code}`)
+      }
     } finally {
       setLoading(false)
     }
@@ -28,7 +41,7 @@ function Login() {
   return (
     <div className="page login-page">
       <div className="container">
-        <div className="login-card scroll-animate-scale">
+        <div className="login-card">
           <div className="login-header">
             <span className="dashboard-eyebrow">Accès Restreint</span>
             <h1>Connexion Manager</h1>
