@@ -110,9 +110,15 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
                   <span className="row-date">{item.date}</span>
                   <span className="row-price">{item.price} FCFA</span>
                   <div className="row-actions">
-                    <span className={`row-status ${getStatusTone(item.status)}`}>
-                      {item.status}
-                    </span>
+                    <select 
+                      className={`status-select ${getStatusTone(item.status)}`}
+                      value={item.status}
+                      onChange={(e) => onUpdateStatus(item.id, e.target.value)}
+                    >
+                      <option value="En cours">En cours</option>
+                      <option value="Urgent">Urgent</option>
+                      <option value="Terminé">Terminé</option>
+                    </select>
                     <button 
                       className="delete-btn" 
                       onClick={() => onDelete(item.id)}
