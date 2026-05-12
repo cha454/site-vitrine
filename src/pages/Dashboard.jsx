@@ -36,84 +36,53 @@ function Dashboard({ interventions, clients }) {
   return (
     <div className="page dashboard-page">
       <div className="container">
-        <section className="dashboard-hero scroll-animate">
-          <div className="dashboard-hero-copy">
-            <span className="dashboard-eyebrow">Cockpit de gestion informatique</span>
-            <h1>Supervisez les interventions, les clients et les urgences en un coup d'oeil</h1>
-            <p className="page-intro dashboard-intro">
-              Cette interface centralise l'activite terrain, la priorisation des tickets
-              et la performance de votre service de support informatique.
-            </p>
+        <section className="dashboard-header scroll-animate">
+          <div className="header-main">
+            <span className="dashboard-eyebrow">Tableau de Bord</span>
+            <h1>Gestion du Support</h1>
           </div>
-
-          <div className="dashboard-hero-panel scroll-animate-right">
-            <div className="hero-panel-line">
-              <span>Charge active</span>
-              <strong>{pendingInterventions} dossiers ouverts</strong>
+          <div className="header-stats">
+            <div className="mini-stat">
+              <span className="mini-label">En ligne</span>
+              <span className="mini-value text-green">Oui</span>
             </div>
-            <div className="hero-panel-line">
-              <span>Niveau d'urgence</span>
-              <strong>{criticalInterventions} tickets critiques</strong>
-            </div>
-            <div className="hero-panel-line">
-              <span>Taux de resolution</span>
-              <strong>{completionRate}% cloture</strong>
+            <div className="mini-stat">
+              <span className="mini-label">Dernier Sync</span>
+              <span className="mini-value">À l'instant</span>
             </div>
           </div>
         </section>
 
         <div className="stats-grid">
           <div className="stat-card scroll-animate-scale delay-1">
-            <span className="stat-label">Revenu realize</span>
-            <strong className="stat-value">{totalRevenue}€</strong>
-            <small>Interventions terminees facturees</small>
+            <div className="stat-icon">💶</div>
+            <div className="stat-info">
+              <span className="stat-label">Revenu</span>
+              <strong className="stat-value">{totalRevenue}€</strong>
+            </div>
           </div>
           <div className="stat-card scroll-animate-scale delay-2">
-            <span className="stat-label">Interventions actives</span>
-            <strong className="stat-value">{pendingInterventions}</strong>
-            <small>Tickets a suivre ou en attente</small>
+            <div className="stat-icon">🔧</div>
+            <div className="stat-info">
+              <span className="stat-label">Actives</span>
+              <strong className="stat-value">{pendingInterventions}</strong>
+            </div>
           </div>
           <div className="stat-card scroll-animate-scale delay-3">
-            <span className="stat-label">Base clients</span>
-            <strong className="stat-value">{clients.length}</strong>
-            <small>Comptes suivis dans la plateforme</small>
+            <div className="stat-icon">👥</div>
+            <div className="stat-info">
+              <span className="stat-label">Clients</span>
+              <strong className="stat-value">{clients.length}</strong>
+            </div>
           </div>
           <div className="stat-card highlight scroll-animate-scale delay-4">
-            <span className="stat-label">Urgences</span>
-            <strong className="stat-value">{criticalInterventions}</strong>
-            <small>Demandes prioritaires a traiter</small>
+            <div className="stat-icon">🚨</div>
+            <div className="stat-info">
+              <span className="stat-label">Urgences</span>
+              <strong className="stat-value">{criticalInterventions}</strong>
+            </div>
           </div>
         </div>
-
-        <SectionDivider />
-
-        <section className="command-deck">
-          <article className="command-card scroll-animate">
-            <span className="section-kicker">Priorite immediate</span>
-            <h3>Focus operationnel</h3>
-            <p>
-              {criticalInterventions > 0
-                ? `${criticalInterventions} urgence${criticalInterventions > 1 ? 's' : ''} demandent une action rapide.`
-                : 'Aucune urgence critique en attente actuellement.'}
-            </p>
-          </article>
-
-          <article className="command-card scroll-animate delay-1">
-            <span className="section-kicker">Performance</span>
-            <h3>Resolution du flux</h3>
-            <p>{completedInterventions} intervention{completedInterventions > 1 ? 's' : ''} cloturee{completedInterventions > 1 ? 's' : ''} avec un taux de resolution de {completionRate}%.</p>
-          </article>
-
-          <article className="command-card accent-card scroll-animate delay-2">
-            <span className="section-kicker">Lecture metier</span>
-            <h3>Signal du jour</h3>
-            <p>
-              {clients.length} client{clients.length > 1 ? 's' : ''} suivis et {pendingInterventions} dossier{pendingInterventions > 1 ? 's' : ''} actif{pendingInterventions > 1 ? 's' : ''} dans la console.
-            </p>
-          </article>
-        </section>
-
-        <SectionDivider />
 
         <div className="dashboard-controls scroll-animate">
           <div className="search-box">
