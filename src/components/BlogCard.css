@@ -1,0 +1,86 @@
+.blog-card {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 20px;
+  padding: 1.5rem;
+  border: 1px solid rgba(96, 165, 250, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+.blog-card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+
+.blog-category {
+  color: #38bdf8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.blog-date {
+  color: #94a3b8;
+}
+
+.blog-card h3 {
+  color: white;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.blog-card p {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.blog-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.like-btn {
+  background: none;
+  border: none;
+  color: #f8fbff;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.like-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.read-more {
+  background: none;
+  border: none;
+  color: #38bdf8;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.read-more:hover {
+  text-decoration: underline;
+}
