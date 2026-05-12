@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore, getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -20,5 +20,10 @@ if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "votre_api_key") {
 }
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+
+// Utilisation de initializeFirestore avec long polling pour éviter les erreurs QUIC et réseau instable
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
+
 export const auth = getAuth(app);

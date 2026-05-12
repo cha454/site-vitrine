@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { db, auth } from './firebase'
-import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore'
+import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, orderBy, where } from 'firebase/firestore'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -50,20 +50,53 @@ function App() {
 
   // Fetch Interventions
   useEffect(() => {
-    const q = query(collection(db, 'interventions'), orderBy('date', 'desc'))
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setInterventions(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
-    })
+    if (!user) {
+      setInterventions([])
+      return
+    }
+
+    // Filtrer par userId pour respecter les règles de sécurité Firestore (Owner Only)
+    const q = query(
+      collection(db, 'interventions'), 
+      where('userId', '==', user.uid),
+      orderBy('date', 'desc')
+    )
+    
+    const unsubscribe = onSnapshot(q, 
+      (snapshot) => {
+        setInterventions(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+      },
+      (error) => {
+        // Si l'erreur est liée à un index manquant, Firestore fournit un lien dans la console
+        console.error("❌ Firestore Error (interventions):", error.code, error.message)
+      }
+    )
     return () => unsubscribe()
-  }, [])
+  }, [user])
 
   // Fetch Clients
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'clients'), (snapshot) => {
-      setClients(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
-    })
+    if (!user) {
+      setClients([])
+      return
+    }
+
+    // Filtrer par userId pour respecter les règles de sécurité Firestore (Owner Only)
+    const q = query(
+      collection(db, 'clients'),
+      where('userId', '==', user.uid)
+    )
+
+    const unsubscribe = onSnapshot(q, 
+      (snapshot) => {
+        setClients(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+      },
+      (error) => {
+        console.error("❌ Firestore Error (clients):", error.code, error.message)
+      }
+    )
     return () => unsubscribe()
-  }, [])
+  }, [user])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
