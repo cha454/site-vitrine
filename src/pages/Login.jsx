@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { auth } from '../firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import './Login.css'
 
@@ -80,7 +80,8 @@ function Login() {
           </form>
           
           <div className="login-footer">
-            <p>Mot de passe oublié ? Contactez l'administrateur.</p>
+            <p>Pas encore de compte ? <Link to="/register" style={{color: '#3b82f6', textDecoration: 'none'}}>S'inscrire</Link></p>
+            <p style={{marginTop: '0.5rem'}}>Mot de passe oublié ? Contactez l'administrateur.</p>
           </div>
         </div>
       </div>
