@@ -1,182 +1,175 @@
 import { useState } from 'react'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import SectionDivider from '../components/SectionDivider'
 import './Page.css'
-import './Interventions.css'
+import './Interventions.css' // Réutilisation des styles de gestion
 
-function Clients({ clients, interventions = [] }) {
-  const [search, setSearch] = useState('')
-  const [selectedClient, setSelectedClient] = useState(null)
+function Clients({ clients, interventions, onAdd, onDelete }) {
+  useScrollAnimation()
+  const [showForm, setShowForm] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [newClient, setNewClient] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    company: ''
+  })
 
-  const filteredClients = clients.filter(c => 
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.email.toLowerCase().includes(search.toLowerCase())
-  )
-
-  const clientsWithCompanyMail = clients.filter((client) => client.email.includes('@')).length
-
-  const getClientStats = (client) => {
-    const relatedInterventions = interventions.filter((item) => item.client === client.name)
-    const revenue = relatedInterventions
-      .filter((item) => item.status === 'Terminé')
-      .reduce((total, item) => total + item.price, 0)
-    const urgent = relatedInterventions.filter((item) => item.status === 'Urgent').length
-    const lastIntervention = relatedInterventions.at(-1)
-
+  const getClientStats = (clientName) => {
+    const clientInters = interventions.filter(i => i.client === clientName)
+    const totalSpent = clientInters.reduce((sum, i) => sum + i.price, 0)
     return {
-      total: relatedInterventions.length,
-      revenue,
-      urgent,
-      lastStatus: lastIntervention?.status || 'Aucun dossier',
-      lastDate: lastIntervention?.date || 'Non disponible'
+      count: clientInters.length,
+      spent: totalSpent,
+      lastDate: clientInters.length > 0 ? clientInters[0].date : 'Aucune'
     }
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    onAdd(newClient)
+    setNewClient({ name: '', email: '', phone: '', address: '', company: '' })
+    setShowForm(false)
+  }
+
+  const filteredClients = clients.filter(c => 
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.email.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   return (
     <div className="page clients-page">
       <div className="container">
-        <section className="management-hero">
-          <div>
-            <span className="management-kicker">Base relationnelle</span>
-            <h1>Gestion des clients</h1>
-            <p className="page-intro management-intro">
-              Recherchez rapidement un client, accedez a ses coordonnees et gardez une
-              vue centrale sur votre portefeuille actif.
-            </p>
+        <header className="management-header scroll-animate">
+          <div className="header-main">
+            <span className="dashboard-eyebrow">Répertoire</span>
+            <h1>Clients</h1>
           </div>
+          <div className="header-actions">
+            <button className="primary-btn" onClick={() => setShowForm(true)}>
+              + Nouveau Client
+            </button>
+          </div>
+        </header>
 
-          <div className="hero-mini-grid">
-            <div className="hero-mini-card">
-              <span>Contacts</span>
-              <strong>{clients.length}</strong>
-            </div>
-            <div className="hero-mini-card">
-              <span>Affiches</span>
-              <strong>{filteredClients.length}</strong>
-            </div>
-            <div className="hero-mini-card">
-              <span>Joignables</span>
-              <strong>{clientsWithCompanyMail}</strong>
-            </div>
-          </div>
-        </section>
-
-        <div className="page-header">
-          <div className="section-heading-block">
-            <span className="section-kicker">Recherche</span>
-            <h2>Annuaire clients</h2>
-          </div>
+        <div className="dashboard-controls scroll-animate">
           <div className="search-box">
-            <input
-              type="text"
-              placeholder="Rechercher un client..."
-              className="blog-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+            <input 
+              type="text" 
+              placeholder="Rechercher un client (nom, email...)" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="interventions-list">
-          <div className="table-header-bar">
-            <div>
-              <span className="section-kicker">Base de donnees</span>
-              <h3>Clients visibles</h3>
-            </div>
-            <span className="results-badge">{filteredClients.length} contact{filteredClients.length > 1 ? 's' : ''}</span>
-          </div>
+        <SectionDivider />
 
-          <table className="management-table">
-            <thead>
-              <tr>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Téléphone</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredClients.map(client => (
-                <tr key={client.id}>
-                  <td>
-                    <div className="client-main">
-                      <strong>{client.name}</strong>
-                      <span>Client actif</span>
+        <div className="clients-grid">
+          {filteredClients.length > 0 ? (
+            filteredClients.map((client, i) => {
+              const stats = getClientStats(client.name)
+              return (
+                <div key={client.id} className={`client-card scroll-animate delay-${(i % 3) + 1}`}>
+                  <div className="client-card-header">
+                    <div className="client-avatar">
+                      {client.name.charAt(0)}
                     </div>
-                  </td>
-                  <td>{client.email}</td>
-                  <td>{client.phone}</td>
-                  <td>
-                    <button
-                      className="row-action-btn"
-                      onClick={() => setSelectedClient(client)}
-                    >
-                      Détails
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <div className="client-badge">
+                      {stats.count > 0 ? `${stats.count} interventions` : 'Nouveau'}
+                    </div>
+                  </div>
+                  
+                  <h3 className="client-name">{client.name}</h3>
+                  <p className="client-company">{client.company || 'Particulier'}</p>
+                  
+                  <div className="client-contact-info">
+                    <div className="contact-item">
+                      <span>📧</span> {client.email}
+                    </div>
+                    <div className="contact-item">
+                      <span>📱</span> {client.phone}
+                    </div>
+                  </div>
+
+                  <div className="client-mini-stats">
+                    <div className="mini-stat">
+                      <span>Total facturé</span>
+                      <strong>{stats.spent}€</strong>
+                    </div>
+                    <div className="mini-stat">
+                      <span>Dernière visite</span>
+                      <strong>{stats.lastDate}</strong>
+                    </div>
+                  </div>
+
+                  <div className="client-card-footer">
+                    <button className="action-btn-sm">Modifier</button>
+                    <button className="action-btn-sm" onClick={() => onDelete(client.id)}>Supprimer</button>
+                  </div>
+                </div>
+              )
+            })
+          ) : (
+            <div className="no-results">Aucun client trouvé.</div>
+          )}
         </div>
-
-        {selectedClient && (
-          <div className="detail-overlay" onClick={() => setSelectedClient(null)}>
-            <div className="detail-modal" onClick={(e) => e.stopPropagation()}>
-              <button
-                className="detail-close"
-                type="button"
-                onClick={() => setSelectedClient(null)}
-                aria-label="Fermer la fiche client"
-              >
-                ×
-              </button>
-
-              <div className="detail-header">
-                <div>
-                  <span className="section-kicker">Fiche client</span>
-                  <h2>{selectedClient.name}</h2>
-                </div>
-                <span className="results-badge">Client actif</span>
-              </div>
-
-              <div className="detail-grid">
-                <div className="detail-card">
-                  <span className="detail-label">Email</span>
-                  <strong>{selectedClient.email}</strong>
-                </div>
-                <div className="detail-card">
-                  <span className="detail-label">Telephone</span>
-                  <strong>{selectedClient.phone}</strong>
-                </div>
-                <div className="detail-card">
-                  <span className="detail-label">Interventions</span>
-                  <strong>{getClientStats(selectedClient).total}</strong>
-                </div>
-                <div className="detail-card">
-                  <span className="detail-label">Revenu genere</span>
-                  <strong>{getClientStats(selectedClient).revenue}€</strong>
-                </div>
-              </div>
-
-              <div className="detail-panel">
-                <h3>Etat du compte</h3>
-                <p>
-                  Dernier statut connu : {getClientStats(selectedClient).lastStatus}. Date du dernier passage :
-                  {' '}{getClientStats(selectedClient).lastDate}.
-                </p>
-              </div>
-
-              <div className="detail-panel">
-                <h3>Signal relation client</h3>
-                <p>
-                  {getClientStats(selectedClient).urgent > 0
-                    ? `${getClientStats(selectedClient).urgent} urgence(s) reliee(s) a ce client ont ete detectees.`
-                    : 'Aucune urgence recente sur ce compte, relation actuellement stable.'}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Modal Création Client */}
+      {showForm && (
+        <div className="management-modal">
+          <div className="modal-box">
+            <button className="close-btn" onClick={() => setShowForm(false)}>&times;</button>
+            <h2>Ajouter un Client</h2>
+            <form onSubmit={handleSubmit} className="contact-form">
+              <div className="form-group">
+                <label>Nom complet</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={newClient.name}
+                  onChange={e => setNewClient({...newClient, name: e.target.value})}
+                  placeholder="Ex: Marie Martin"
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Email</label>
+                  <input 
+                    type="email" 
+                    required 
+                    value={newClient.email}
+                    onChange={e => setNewClient({...newClient, email: e.target.value})}
+                    placeholder="marie@exemple.com"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Téléphone</label>
+                  <input 
+                    type="tel" 
+                    required 
+                    value={newClient.phone}
+                    onChange={e => setNewClient({...newClient, phone: e.target.value})}
+                    placeholder="06 00 00 00 00"
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Entreprise (Optionnel)</label>
+                <input 
+                  type="text" 
+                  value={newClient.company}
+                  onChange={e => setNewClient({...newClient, company: e.target.value})}
+                  placeholder="Nom de la société"
+                />
+              </div>
+              <button type="submit" className="primary-btn w-full">Enregistrer le client</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

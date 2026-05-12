@@ -1,17 +1,13 @@
 import { useState } from 'react'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import SectionDivider from '../components/SectionDivider'
 import './Page.css'
 import './Interventions.css'
 
 function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
-  const getStatusTone = (status) => {
-    if (status === 'Terminé') return 'is-done'
-    if (status === 'Urgent') return 'is-urgent'
-    return 'is-active'
-  }
-
+  useScrollAnimation()
   const [showForm, setShowForm] = useState(false)
   const [filter, setFilter] = useState('Tous')
-  const [selectedIntervention, setSelectedIntervention] = useState(null)
   const [newInter, setNewInter] = useState({
     client: '',
     problem: '',
@@ -19,6 +15,12 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
     date: new Date().toISOString().split('T')[0],
     price: 0
   })
+
+  const getStatusTone = (status) => {
+    if (status === 'Terminé') return 'is-done'
+    if (status === 'Urgent') return 'is-urgent'
+    return 'is-active'
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -36,276 +38,136 @@ function Interventions({ interventions, onAdd, onDelete, onUpdateStatus }) {
   const filteredInterventions = interventions.filter(i => 
     filter === 'Tous' || i.status === filter
   )
-  const filteredRevenue = filteredInterventions.reduce((total, item) => total + item.price, 0)
-  const filteredDone = filteredInterventions.filter((item) => item.status === 'Terminé').length
 
-  const getInterventionInsight = (item) => {
-    if (item.status === 'Urgent') {
-      return {
-        priority: 'Priorite maximale',
-        action: 'Prevenir le technicien et traiter le dossier avant toute autre intervention planifiee.',
-        followUp: 'Appel client recommande dans l’heure.'
-      }
-    }
-
-    if (item.status === 'Terminé') {
-      return {
-        priority: 'Mission cloturee',
-        action: 'Verifier la satisfaction client et archiver la resolution dans le suivi.',
-        followUp: 'Envoi de compte-rendu ou de facture conseille.'
-      }
-    }
-
-    return {
-      priority: 'Suivi actif',
-      action: 'Confirmer le prochain point de contact et la disponibilite des ressources.',
-      followUp: 'Mettre a jour le statut des que l’intervention evolue.'
-    }
-  }
+  const stats = [
+    { label: 'Toutes', value: interventions.length, icon: '📋', status: 'Tous' },
+    { label: 'Urgentes', value: interventions.filter(i => i.status === 'Urgent').length, icon: '🚨', status: 'Urgent' },
+    { label: 'En cours', value: interventions.filter(i => i.status === 'En cours').length, icon: '⏳', status: 'En cours' },
+    { label: 'Terminées', value: interventions.filter(i => i.status === 'Terminé').length, icon: '✅', status: 'Terminé' }
+  ]
 
   return (
     <div className="page interventions-page">
       <div className="container">
-        <section className="management-hero">
-          <div>
-            <span className="management-kicker">Operations terrain</span>
-            <h1>Gestion des interventions</h1>
-            <p className="page-intro management-intro">
-              Creez, filtrez et mettez a jour les interventions en gardant une lecture
-              immediate des priorites, des delais et du volume d'activite.
-            </p>
+        <header className="management-header scroll-animate">
+          <div className="header-main">
+            <span className="dashboard-eyebrow">Opérations</span>
+            <h1>Interventions</h1>
           </div>
+          <div className="header-actions">
+            <button className="primary-btn" onClick={() => setShowForm(true)}>
+              + Nouvelle Intervention
+            </button>
+          </div>
+        </header>
 
-          <div className="hero-mini-grid">
-            <div className="hero-mini-card">
-              <span>Ouvertes</span>
-              <strong>{interventions.filter((item) => item.status !== 'Terminé').length}</strong>
+        <div className="quick-stats-bar scroll-animate">
+          {stats.map((s, i) => (
+            <div 
+              key={s.label} 
+              className={`stat-pill ${filter === s.status ? 'active' : ''} delay-${i+1}`}
+              onClick={() => setFilter(s.status)}
+            >
+              <span className="pill-icon">{s.icon}</span>
+              <div className="pill-info">
+                <span className="pill-label">{s.label}</span>
+                <span className="pill-value">{s.value}</span>
+              </div>
             </div>
-            <div className="hero-mini-card">
-              <span>Urgentes</span>
-              <strong>{interventions.filter((item) => item.status === 'Urgent').length}</strong>
-            </div>
-            <div className="hero-mini-card">
-              <span>Total</span>
-              <strong>{interventions.length}</strong>
-            </div>
-          </div>
-        </section>
-
-        <div className="page-header">
-          <div className="section-heading-block">
-            <span className="section-kicker">Workflow</span>
-            <h2>Suivi et creation</h2>
-          </div>
-          <button
-            className="primary-btn"
-            onClick={() => setShowForm(!showForm)}
-          >
-            {showForm ? 'Annuler' : '+ Nouvelle Intervention'}
-          </button>
+          ))}
         </div>
 
-        {showForm && (
-          <section className="form-section">
-            <form className="contact-form" onSubmit={handleSubmit}>
-              <h2>Nouvelle Intervention</h2>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>Client</label>
-                  <input 
-                    type="text" 
-                    value={newInter.client} 
-                    onChange={e => setNewInter({...newInter, client: e.target.value})}
-                    required 
-                  />
+        <SectionDivider />
+
+        <div className="management-container scroll-animate">
+          <div className="table-header">
+            <span>Client</span>
+            <span>Problème</span>
+            <span>Date</span>
+            <span>Prix</span>
+            <span>Statut</span>
+          </div>
+          <div className="table-body">
+            {filteredInterventions.length > 0 ? (
+              filteredInterventions.map((item) => (
+                <div key={item.id} className="table-row">
+                  <span className="row-client">{item.client}</span>
+                  <span className="row-problem">{item.problem}</span>
+                  <span className="row-date">{item.date}</span>
+                  <span className="row-price">{item.price}€</span>
+                  <div className="row-actions">
+                    <span className={`row-status ${getStatusTone(item.status)}`}>
+                      {item.status}
+                    </span>
+                    <button 
+                      className="delete-btn" 
+                      onClick={() => onDelete(item.id)}
+                      title="Supprimer"
+                    >
+                      &times;
+                    </button>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className="no-results">Aucune intervention trouvée.</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Modal Création */}
+      {showForm && (
+        <div className="management-modal">
+          <div className="modal-box">
+            <button className="close-btn" onClick={() => setShowForm(false)}>&times;</button>
+            <h2>Nouvelle Intervention</h2>
+            <form onSubmit={handleSubmit} className="contact-form">
+              <div className="form-group">
+                <label>Nom du client</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={newInter.client}
+                  onChange={e => setNewInter({...newInter, client: e.target.value})}
+                  placeholder="Ex: Jean Dupont"
+                />
+              </div>
+              <div className="form-group">
+                <label>Description du problème</label>
+                <textarea 
+                  required 
+                  value={newInter.problem}
+                  onChange={e => setNewInter({...newInter, problem: e.target.value})}
+                  placeholder="Ex: Écran bleu au démarrage"
+                />
+              </div>
+              <div className="form-row">
                 <div className="form-group">
                   <label>Prix (€)</label>
                   <input 
                     type="number" 
-                    value={newInter.price} 
-                    onChange={e => setNewInter({...newInter, price: parseInt(e.target.value)})}
-                    required 
-                  />
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Problème</label>
-                <textarea 
-                  value={newInter.problem} 
-                  onChange={e => setNewInter({...newInter, problem: e.target.value})}
-                  required 
-                ></textarea>
-              </div>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>Date</label>
-                  <input 
-                    type="date" 
-                    value={newInter.date} 
-                    onChange={e => setNewInter({...newInter, date: e.target.value})}
-                    required 
+                    value={newInter.price}
+                    onChange={e => setNewInter({...newInter, price: parseInt(e.target.value) || 0})}
                   />
                 </div>
                 <div className="form-group">
                   <label>Statut</label>
                   <select 
-                    value={newInter.status} 
+                    value={newInter.status}
                     onChange={e => setNewInter({...newInter, status: e.target.value})}
                   >
                     <option value="En cours">En cours</option>
-                    <option value="Terminé">Terminé</option>
                     <option value="Urgent">Urgent</option>
+                    <option value="Terminé">Terminé</option>
                   </select>
                 </div>
               </div>
-              <button type="submit" className="submit-btn">Enregistrer</button>
+              <button type="submit" className="primary-btn w-full">Créer la fiche</button>
             </form>
-          </section>
-        )}
-
-        <div className="filter-tabs">
-          {['Tous', 'En cours', 'Terminé', 'Urgent'].map(tab => (
-            <button
-              key={tab}
-              className={`tab-btn ${filter === tab ? 'active' : ''}`}
-              onClick={() => setFilter(tab)}
-            >
-              {tab}
-            </button>
-          ))}
+          </div>
         </div>
-
-        <div className="interventions-list">
-          <div className="table-header-bar">
-            <div>
-              <span className="section-kicker">Liste</span>
-              <h3>Interventions visibles</h3>
-            </div>
-            <span className="results-badge">{filteredInterventions.length} resultat{filteredInterventions.length > 1 ? 's' : ''}</span>
-          </div>
-
-          <div className="data-strip">
-            <div className="data-pill">
-              <span>Valeur visible</span>
-              <strong>{filteredRevenue}€</strong>
-            </div>
-            <div className="data-pill">
-              <span>Cloturees</span>
-              <strong>{filteredDone}</strong>
-            </div>
-            <div className="data-pill">
-              <span>Lecture</span>
-              <strong>{filter === 'Tous' ? 'Vue globale' : filter}</strong>
-            </div>
-          </div>
-
-          <table className="management-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Client</th>
-                <th>Problème</th>
-                <th>Prix</th>
-                <th>Statut</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredInterventions.map(inter => (
-                <tr key={inter.id}>
-                  <td>{inter.date}</td>
-                  <td><strong>{inter.client}</strong></td>
-                  <td>{inter.problem}</td>
-                  <td>{inter.price}€</td>
-                  <td>
-                    <select
-                      className={`status-select ${getStatusTone(inter.status)}`}
-                      value={inter.status}
-                      onChange={(e) => onUpdateStatus(inter.id, e.target.value)}
-                    >
-                      <option value="En cours">En cours</option>
-                      <option value="Terminé">Terminé</option>
-                      <option value="Urgent">Urgent</option>
-                    </select>
-                  </td>
-                  <td>
-                    <div className="row-actions">
-                      <button
-                        className="row-action-btn"
-                        onClick={() => setSelectedIntervention(inter)}
-                      >
-                        Voir
-                      </button>
-                      <button
-                        className="delete-btn"
-                        onClick={() => onDelete(inter.id)}
-                        aria-label={`Supprimer l'intervention de ${inter.client}`}
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {selectedIntervention && (
-          <div className="detail-overlay" onClick={() => setSelectedIntervention(null)}>
-            <div className="detail-modal" onClick={(e) => e.stopPropagation()}>
-              <button
-                className="detail-close"
-                type="button"
-                onClick={() => setSelectedIntervention(null)}
-                aria-label="Fermer les details de l'intervention"
-              >
-                ×
-              </button>
-
-              <div className="detail-header">
-                <div>
-                  <span className="section-kicker">Dossier intervention</span>
-                  <h2>{selectedIntervention.client}</h2>
-                </div>
-                <span className={`status-pill ${getStatusTone(selectedIntervention.status)}`}>
-                  {selectedIntervention.status}
-                </span>
-              </div>
-
-              <div className="detail-grid">
-                <div className="detail-card">
-                  <span className="detail-label">Probleme declare</span>
-                  <strong>{selectedIntervention.problem}</strong>
-                </div>
-                <div className="detail-card">
-                  <span className="detail-label">Date planifiee</span>
-                  <strong>{selectedIntervention.date}</strong>
-                </div>
-                <div className="detail-card">
-                  <span className="detail-label">Montant</span>
-                  <strong>{selectedIntervention.price}€</strong>
-                </div>
-                <div className="detail-card">
-                  <span className="detail-label">Lecture prioritaire</span>
-                  <strong>{getInterventionInsight(selectedIntervention).priority}</strong>
-                </div>
-              </div>
-
-              <div className="detail-panel">
-                <h3>Action recommandee</h3>
-                <p>{getInterventionInsight(selectedIntervention).action}</p>
-              </div>
-
-              <div className="detail-panel">
-                <h3>Suivi conseille</h3>
-                <p>{getInterventionInsight(selectedIntervention).followUp}</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   )
 }
