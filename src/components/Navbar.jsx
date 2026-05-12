@@ -11,6 +11,7 @@ function Navbar({ activeCount = 0, urgentCount = 0, clientCount = 0, user, onLog
     { to: '/', label: 'Tableau de bord', end: true },
     { to: '/interventions', label: 'Interventions' },
     { to: '/clients', label: 'Clients' },
+    { to: '/users', label: 'Utilisateurs' },
     { to: '/suivi', label: 'Suivi Client' },
   ] : [
     { to: '/suivi', label: 'Suivi Client' },
