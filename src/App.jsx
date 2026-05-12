@@ -13,6 +13,8 @@ import Interventions from './pages/Interventions'
 import Clients from './pages/Clients'
 import Tracking from './pages/Tracking'
 import Login from './pages/Login'
+import Register from './pages/Register'
+import VerifyCode from './pages/VerifyCode'
 import './App.css'
 
 // Composant pour gérer les transitions et le scroll
@@ -233,6 +235,8 @@ function App() {
         <main className="app-content">
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/verify" element={<VerifyCode />} />
             <Route path="/" element={
               <ProtectedRoute>
                 <PageWrapper><Dashboard interventions={interventions} clients={clients} /></PageWrapper>
