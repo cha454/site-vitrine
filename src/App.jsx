@@ -75,26 +75,61 @@ function App() {
 
   const addIntervention = async (inter) => {
     try {
-      console.log("Firestore: Tentative d'ajout d'intervention...", inter)
-      const docRef = await addDoc(collection(db, 'interventions'), inter)
-      console.log("Firestore: Intervention ajoutée avec ID:", docRef.id)
+      console.log("🔥 [App] addIntervention start:", inter)
+      if (!auth.currentUser) {
+        alert("Session expirée. Veuillez vous reconnecter.")
+        return
+      }
+      const docRef = await addDoc(collection(db, 'interventions'), {
+        ...inter,
+        createdAt: new Date().toISOString(),
+        userId: auth.currentUser.uid
+      })
+      console.log("✅ [App] addIntervention success:", docRef.id)
     } catch (error) {
-      console.error("Firestore Error (addIntervention):", error)
-      throw error // On propage l'erreur pour que le composant puisse l'attraper
+      console.error("❌ [App] Firestore Error (addIntervention):", error)
+      alert("Erreur Firestore : " + error.message)
+      throw error
     }
   }
 
   const deleteIntervention = async (id) => {
+    if (!window.confirm("Supprimer cette intervention ?")) return
     try {
+      console.log("🔥 [App] deleteIntervention start:", id)
       await deleteDoc(doc(db, 'interventions', id))
+      console.log("✅ [App] deleteIntervention success")
     } catch (error) {
-      console.error("Firestore Error (deleteIntervention):", error)
+      console.error("❌ [App] Firestore Error (deleteIntervention):", error)
+      alert("Erreur de suppression : " + error.message)
+    }
+  }
+
+  const addClient = async (client) => {
+    try {
+      console.log("🔥 [App] addClient start:", client)
+      if (!auth.currentUser) {
+        alert("Session expirée. Veuillez vous reconnecter.")
+        return
+      }
+      const docRef = await addDoc(collection(db, 'clients'), {
+        ...client,
+        createdAt: new Date().toISOString(),
+        userId: auth.currentUser.uid
+      })
+      console.log("✅ [App] addClient success:", docRef.id)
+    } catch (error) {
+      console.error("❌ [App] Firestore Error (addClient):", error)
+      alert("Erreur Firestore : " + error.message)
+      throw error
     }
   }
 
   const updateInterventionStatus = async (id, status) => {
     try {
+      console.log("🔥 [App] updateStatus start:", id, status)
       await updateDoc(doc(db, 'interventions', id), { status })
+      console.log("✅ [App] updateStatus success")
       
       // Envoi d'email SMTP si l'intervention est terminée
       if (status === 'Terminé') {
@@ -113,26 +148,20 @@ function App() {
         }
       }
     } catch (error) {
-      console.error("Firestore Error (updateStatus):", error)
-    }
-  }
-
-  const addClient = async (client) => {
-    try {
-      console.log("Firestore: Tentative d'ajout de client...", client)
-      const docRef = await addDoc(collection(db, 'clients'), client)
-      console.log("Firestore: Client ajouté avec ID:", docRef.id)
-    } catch (error) {
-      console.error("Firestore Error (addClient):", error)
-      throw error // On propage l'erreur
+      console.error("❌ [App] Firestore Error (updateStatus):", error)
+      alert("Erreur de mise à jour : " + error.message)
     }
   }
 
   const deleteClient = async (id) => {
+    if (!window.confirm("Supprimer ce client ?")) return
     try {
+      console.log("🔥 [App] deleteClient start:", id)
       await deleteDoc(doc(db, 'clients', id))
+      console.log("✅ [App] deleteClient success")
     } catch (error) {
-      console.error("Error deleting client:", error)
+      console.error("❌ [App] Firestore Error (deleteClient):", error)
+      alert("Erreur de suppression : " + error.message)
     }
   }
 
