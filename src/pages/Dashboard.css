@@ -108,6 +108,8 @@
 .stat-card.highlight .stat-value {
   color: #f87171;
 }
+
+.command-card {
   border: 1px solid rgba(96, 165, 250, 0.12);
   box-shadow: 0 16px 34px rgba(2, 6, 23, 0.18);
   backdrop-filter: blur(14px);
