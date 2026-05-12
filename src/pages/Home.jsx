@@ -11,9 +11,27 @@ import './Page.css'
 
 function Home() {
   const [supportStatus, setSupportStatus] = useState('En ligne')
+  const [displayText, setDisplayText] = useState('')
+  const fullText = 'Dépannage rapide pour vos problèmes informatiques'
   useScrollAnimation()
 
   useEffect(() => {
+    let currentText = ''
+    let currentIndex = 0
+    const typingInterval = setInterval(() => {
+      if (currentIndex < fullText.length) {
+        currentText += fullText[currentIndex]
+        setDisplayText(currentText)
+        currentIndex++
+      } else {
+        clearInterval(typingInterval)
+      }
+    }, 50)
+    return () => clearInterval(typingInterval)
+  }, [])
+
+  useEffect(() => {
+
     const statuses = ['En ligne', 'Intervention en cours', 'Disponible']
     const interval = setInterval(() => {
       const randomStatus = statuses[Math.floor(Math.random() * statuses.length)]
@@ -32,7 +50,10 @@ function Home() {
               Support : {supportStatus}
             </div>
             <span className="eyebrow">Support Informatique Professionnel</span>
-            <h1 className="hero-title">Dépannage rapide pour vos problèmes informatiques</h1>
+            <h1 className="hero-title min-h-[80px]">
+              {displayText}
+              <span className="cursor-blink">|</span>
+            </h1>
             <p className="hero-text">
               Intervention à domicile ou à distance. Particuliers et professionnels.
               Disponible 7j/7 pour vos urgences.

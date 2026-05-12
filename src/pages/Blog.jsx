@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import SectionDivider from '../components/SectionDivider'
 import BlogCard from '../components/BlogCard'
 import './Page.css'
 import './Blog.css'
@@ -43,6 +45,7 @@ const MOCK_ARTICLES = [
 ]
 
 function Blog({ onLike }) {
+  useScrollAnimation()
   const [articles, setArticles] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('Tous')
@@ -83,12 +86,12 @@ function Blog({ onLike }) {
   return (
     <div className="page blog-page">
       <div className="container">
-        <h1>📰 Notre Blog</h1>
-        <p className="page-intro">
+        <h1 className="scroll-animate">📰 Notre Blog</h1>
+        <p className="page-intro scroll-animate">
           Retrouvez nos derniers conseils et astuces pour entretenir votre matériel informatique.
         </p>
 
-        <div className="blog-controls">
+        <div className="blog-controls scroll-animate">
           <div className="search-box">
             <input 
               type="text" 
@@ -112,54 +115,43 @@ function Blog({ onLike }) {
           </div>
         </div>
 
+        <SectionDivider />
+
         {loading ? (
-          <div className="blog-loading">
-            <div className="spinner"></div>
-            <p>Chargement des articles...</p>
-          </div>
+          <div className="blog-loading">Chargement des articles...</div>
         ) : (
           <div className="blog-grid">
             {filteredArticles.length > 0 ? (
-              filteredArticles.map(article => (
-                <BlogCard 
-                  key={article.id}
-                  article={article}
-                  onLike={handleLike}
-                  onClick={setSelectedArticle}
-                />
+              filteredArticles.map((article, index) => (
+                <div key={article.id} className={`scroll-animate delay-${(index % 3) + 1}`}>
+                  <BlogCard 
+                    article={article} 
+                    onLike={() => handleLike(article.id)}
+                    onClick={() => setSelectedArticle(article)}
+                  />
+                </div>
               ))
             ) : (
-              <div className="no-results">
-                <p>Aucun article ne correspond à votre recherche.</p>
-              </div>
+              <div className="no-results">Aucun article ne correspond à votre recherche.</div>
             )}
           </div>
         )}
       </div>
 
-      {/* Modal d'article */}
       {selectedArticle && (
-        <div className="modal-overlay" onClick={() => setSelectedArticle(null)}>
+        <div className="article-modal" onClick={() => setSelectedArticle(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setSelectedArticle(null)}>×</button>
-            <div className="modal-header">
-              <span className="blog-category">{selectedArticle.category}</span>
-              <span className="blog-date">{selectedArticle.date}</span>
-            </div>
+            <button className="close-modal" onClick={() => setSelectedArticle(null)}>&times;</button>
+            <span className="modal-category">{selectedArticle.category}</span>
             <h2>{selectedArticle.title}</h2>
+            <p className="modal-date">Publié le {selectedArticle.date}</p>
             <div className="modal-body">
-              <p className="article-full-content">{selectedArticle.content}</p>
+              <p>{selectedArticle.content}</p>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                Il est également conseillé de mettre à jour régulièrement vos logiciels et de 
+                ne pas cliquer sur des liens suspects dans vos emails. La prévention est la 
+                meilleure des protections.
               </p>
-              <p>
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-            </div>
-            <div className="modal-footer">
-              <button className="primary-btn" onClick={() => setSelectedArticle(null)}>
-                Fermer
-              </button>
             </div>
           </div>
         </div>

@@ -1,8 +1,11 @@
 import { useState } from 'react'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import SectionDivider from '../components/SectionDivider'
 import contactIllustration from '../assets/contact-illustration.svg'
 import './Page.css'
 
 function Contact() {
+  useScrollAnimation()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -82,12 +85,12 @@ function Contact() {
   return (
     <div className="page">
       <div className="container">
-        <h1>📞 Contactez-nous</h1>
-        <p className="page-intro">
+        <h1 className="scroll-animate">📞 Contactez-nous</h1>
+        <p className="page-intro scroll-animate">
           Besoin d'aide ? Remplissez le formulaire ci-dessous ou appelez-nous directement !
         </p>
 
-        <section className="visual-panel">
+        <section className="visual-panel scroll-animate">
           <div className="visual-panel-copy">
             <h2>Une demande rapide, un traitement plus simple</h2>
             <p>
@@ -101,142 +104,129 @@ function Contact() {
             className="section-image"
           />
         </section>
-        
-        <div className="contact-content">
-          <div className="contact-info">
-            <h2>Coordonnées</h2>
-            <div className="contact-block">
-              <p className="contact-label">📱 <strong>Téléphone</strong></p>
-              <p className="contact-highlight">01 23 45 67 89</p>
-              <p className="contact-meta">Lun-Ven: 8h-20h | Sam: 9h-18h</p>
-            </div>
-            
-            <div className="contact-block">
-              <p className="contact-label">📧 <strong>Email</strong></p>
-              <p className="contact-highlight">support@cdoc.fr</p>
-              <p className="contact-meta">Réponse sous 24h</p>
-            </div>
 
-            <div className="contact-block">
-              <p className="contact-label">📍 <strong>Adresse</strong></p>
-              <p>123 Avenue de la République</p>
-              <p>75011 Paris, France</p>
-            </div>
+        <SectionDivider />
 
-            <div className="contact-note">
-              <strong>⚡ Urgence ?</strong>
-              <span>Appelez-nous directement pour une intervention rapide !</span>
+        <div className="contact-grid">
+          <div className="contact-info scroll-animate-left">
+            <h3>Coordonnées</h3>
+            <div className="info-card">
+              <strong>📍 Adresse</strong>
+              <p>123 Rue de l'Informatique, 75000 Paris</p>
+            </div>
+            <div className="info-card">
+              <strong>📱 Téléphone</strong>
+              <p>01 23 45 67 89</p>
+            </div>
+            <div className="info-card">
+              <strong>📧 Email</strong>
+              <p>contact@cdoc-support.fr</p>
+            </div>
+            <div className="info-card">
+              <strong>🕒 Horaires</strong>
+              <p>Lundi - Vendredi : 9h - 19h<br />Samedi : 10h - 17h</p>
             </div>
           </div>
 
-          <form className="contact-form" onSubmit={handleSubmit}>
-            <h2>Demande d'intervention</h2>
-            
-            {submitState === 'success' && (
-              <div className="form-success" role="status" aria-live="polite">
-                Votre demande a bien été envoyée ! Nous vous recontacterons rapidement.
-              </div>
-            )}
-
-            <div className={`form-group ${errors.name ? 'has-error' : ''}`}>
-              <label htmlFor="name">Nom complet *</label>
+          <form onSubmit={handleSubmit} className="contact-form scroll-animate-right">
+            <div className="form-group">
+              <label htmlFor="name">Nom complet</label>
               <input
                 type="text"
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Jean Dupont"
+                className={errors.name ? 'error' : ''}
+                placeholder="Votre nom"
               />
-              {errors.name && <span className="error-msg">{errors.name}</span>}
+              {errors.name && <span className="error-message">{errors.name}</span>}
             </div>
 
-            <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
-              <label htmlFor="email">Email *</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="jean.dupont@email.com"
-              />
-              {errors.email && <span className="error-msg">{errors.email}</span>}
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={errors.email ? 'error' : ''}
+                  placeholder="votre@email.com"
+                />
+                {errors.email && <span className="error-message">{errors.email}</span>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="phone">Téléphone</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className={errors.phone ? 'error' : ''}
+                  placeholder="06 12 34 56 78"
+                />
+                {errors.phone && <span className="error-message">{errors.phone}</span>}
+              </div>
             </div>
 
-            <div className={`form-group ${errors.phone ? 'has-error' : ''}`}>
-              <label htmlFor="phone">Téléphone *</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="06 12 34 56 78"
-              />
-              {errors.phone && <span className="error-msg">{errors.phone}</span>}
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="urgency">Urgence</label>
+                <select
+                  id="urgency"
+                  name="urgency"
+                  value={formData.urgency}
+                  onChange={handleChange}
+                >
+                  <option value="normal">Normale (Sous 24-48h)</option>
+                  <option value="urgent">Urgente (Sous 24h)</option>
+                  <option value="critical">Critique (Immédiat)</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="problemType">Type de problème</label>
+                <select
+                  id="problemType"
+                  name="problemType"
+                  value={formData.problemType}
+                  onChange={handleChange}
+                >
+                  <option value="">Sélectionnez...</option>
+                  <option value="hardware">Panne matérielle</option>
+                  <option value="software">Problème logiciel / Windows</option>
+                  <option value="network">Réseau / Internet</option>
+                  <option value="virus">Virus / Sécurité</option>
+                  <option value="other">Autre</option>
+                </select>
+              </div>
             </div>
 
             <div className="form-group">
-              <label htmlFor="urgency">Urgence *</label>
-              <select
-                id="urgency"
-                name="urgency"
-                value={formData.urgency}
-                onChange={handleChange}
-                required
-              >
-                <option value="normal">Normal (sous 48h)</option>
-                <option value="urgent">Urgent (sous 24h)</option>
-                <option value="critical">Critique (intervention immédiate)</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="problemType">Type de problème *</label>
-              <select
-                id="problemType"
-                name="problemType"
-                value={formData.problemType}
-                onChange={handleChange}
-                required
-              >
-                <option value="">-- Sélectionnez --</option>
-                <option value="slow">Ordinateur lent</option>
-                <option value="virus">Virus / Malware</option>
-                <option value="crash">Plantages / Écrans bleus</option>
-                <option value="network">Problème réseau / Internet</option>
-                <option value="hardware">Panne matérielle</option>
-                <option value="install">Installation / Configuration</option>
-                <option value="data">Récupération de données</option>
-                <option value="other">Autre</option>
-              </select>
-            </div>
-
-            <div className={`form-group ${errors.message ? 'has-error' : ''}`}>
-              <label htmlFor="message">Description du problème *</label>
+              <label htmlFor="message">Description du problème</label>
               <textarea
                 id="message"
                 name="message"
                 rows="5"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Décrivez votre problème en détail..."
+                className={errors.message ? 'error' : ''}
+                placeholder="Décrivez votre problème en quelques mots..."
               ></textarea>
-              {errors.message && <span className="error-msg">{errors.message}</span>}
+              {errors.message && <span className="error-message">{errors.message}</span>}
             </div>
 
-            <button
-              type="submit"
-              className="submit-btn"
+            <button 
+              type="submit" 
+              className={`primary-btn ${submitState}`}
               disabled={submitState === 'sending'}
             >
-              {submitState === 'sending' ? 'Envoi en cours...' : '📨 Envoyer la demande'}
+              {submitState === 'idle' && 'Envoyer la demande'}
+              {submitState === 'sending' && 'Envoi en cours...'}
+              {submitState === 'success' && '✓ Message envoyé !'}
             </button>
-            
-            <p className="form-note">
-              * Champs obligatoires
-            </p>
           </form>
         </div>
       </div>

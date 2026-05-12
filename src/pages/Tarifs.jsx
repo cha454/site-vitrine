@@ -1,8 +1,11 @@
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import SectionDivider from '../components/SectionDivider'
 import pricingIllustration from '../assets/pricing-illustration.svg'
 import PricingTable from '../components/PricingTable'
 import './Page.css'
 
 function Tarifs() {
+  useScrollAnimation()
   const tarifs = [
     {
       id: 1,
@@ -51,12 +54,12 @@ function Tarifs() {
   return (
     <div className="page">
       <div className="container">
-        <h1>💰 Nos Tarifs</h1>
-        <p className="blog-intro">
+        <h1 className="scroll-animate">💰 Nos Tarifs</h1>
+        <p className="blog-intro scroll-animate">
           Tarifs transparents et sans surprise. Tous nos prix sont TTC.
         </p>
 
-        <section className="visual-panel visual-panel-accent">
+        <section className="visual-panel visual-panel-accent scroll-animate">
           <div className="visual-panel-copy">
             <h2>Des prix simples a comprendre</h2>
             <p>
@@ -71,30 +74,36 @@ function Tarifs() {
           />
         </section>
 
-        <div className="promo-banner">
+        <SectionDivider />
+
+        <div className="promo-banner scroll-animate-scale">
           <h3>🎁 Offre spéciale</h3>
           <p>
             Diagnostic gratuit + 10% de réduction sur votre première intervention !
           </p>
         </div>
 
-        {tarifs.map(tarif => (
-          <PricingTable 
-            key={tarif.id}
-            category={tarif.category}
-            items={tarif.items}
-          />
+        {tarifs.map((tarif, index) => (
+          <div key={tarif.id} className={`scroll-animate-${index % 2 === 0 ? 'left' : 'right'}`}>
+            <PricingTable 
+              category={tarif.category}
+              items={tarif.items}
+            />
+            {index < tarifs.length - 1 && <SectionDivider />}
+          </div>
         ))}
 
-        <section className="about-section important-note">
+        <SectionDivider />
+
+        <section className="about-section important-note scroll-animate">
           <h2>ℹ️ Informations importantes</h2>
           <ul className="values-list">
-            <li>Tous les tarifs sont TTC (TVA 20%)</li>
-            <li>Devis gratuit et sans engagement</li>
-            <li>Paiement par CB, espèces ou virement</li>
-            <li>Garantie 3 mois sur toutes nos interventions</li>
-            <li>Tarifs dégressifs pour les professionnels</li>
-            <li>Possibilité de forfaits personnalisés</li>
+            <li className="scroll-animate-left delay-1">Tous les tarifs sont TTC (TVA 20%)</li>
+            <li className="scroll-animate-left delay-2">Devis gratuit et sans engagement</li>
+            <li className="scroll-animate-left delay-3">Paiement par CB, espèces ou virement</li>
+            <li className="scroll-animate-left delay-4">Garantie 3 mois sur toutes nos interventions</li>
+            <li className="scroll-animate-left delay-5">Tarifs dégressifs pour les professionnels</li>
+            <li className="scroll-animate-left delay-1">Possibilité de forfaits personnalisés</li>
           </ul>
         </section>
       </div>
