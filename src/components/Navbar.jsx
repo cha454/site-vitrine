@@ -7,19 +7,13 @@ function Navbar({ activeCount = 0, urgentCount = 0, clientCount = 0, user, onLog
 
   const closeMenu = () => setIsMenuOpen(false)
 
-  const publicLinks = [
-    { to: '/', label: 'Accueil', end: true },
-    { to: '/about', label: 'Services' },
-    { to: '/tarifs', label: 'Tarifs' },
-    { to: '/blog', label: 'Blog' },
-    { to: '/contact', label: 'Contact' },
-    { to: '/suivi', label: 'Suivi' },
-  ]
-
-  const adminLinks = [
-    { to: '/admin', label: 'Cockpit', end: true },
-    { to: '/admin/interventions', label: 'Opérations' },
-    { to: '/admin/clients', label: 'Répertoire' },
+  const links = user ? [
+    { to: '/', label: 'Tableau de bord', end: true },
+    { to: '/interventions', label: 'Interventions' },
+    { to: '/clients', label: 'Clients' },
+    { to: '/suivi', label: 'Suivi Client' },
+  ] : [
+    { to: '/suivi', label: 'Suivi Client' },
   ]
 
   return (
@@ -59,7 +53,7 @@ function Navbar({ activeCount = 0, urgentCount = 0, clientCount = 0, user, onLog
           id="main-navigation"
           className={`nav-menu ${isMenuOpen ? 'open' : ''}`}
         >
-          {publicLinks.map((link) => (
+          {links.map((link) => (
             <li key={link.to} className="nav-item">
               <NavLink
                 to={link.to}
@@ -73,34 +67,13 @@ function Navbar({ activeCount = 0, urgentCount = 0, clientCount = 0, user, onLog
               </NavLink>
             </li>
           ))}
-
-          {user && (
-            <>
-              <li className="nav-separator" aria-hidden="true"></li>
-              {adminLinks.map((link) => (
-                <li key={link.to} className="nav-item">
-                  <NavLink
-                    to={link.to}
-                    end={link.end}
-                    className={({ isActive }) =>
-                      isActive ? 'nav-link active admin-link' : 'nav-link admin-link'
-                    }
-                    onClick={closeMenu}
-                  >
-                    {link.label}
-                  </NavLink>
-                </li>
-              ))}
-            </>
-          )}
-
           {user ? (
             <li className="nav-item">
-              <button onClick={onLogout} className="logout-btn">Quitter</button>
+              <button onClick={onLogout} className="logout-btn">Déconnexion</button>
             </li>
           ) : (
             <li className="nav-item">
-              <NavLink to="/login" className="nav-link login-trigger" onClick={closeMenu}>Connexion</NavLink>
+              <NavLink to="/login" className="nav-link" onClick={closeMenu}>Connexion</NavLink>
             </li>
           )}
         </ul>

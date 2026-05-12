@@ -1,8 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { initializeFirestore, getFirestore } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
-// Configuration Firebase pour CDOC Support
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -21,10 +20,5 @@ if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "votre_api_key") {
 }
 
 const app = initializeApp(firebaseConfig);
-
-// Utilisation de initializeFirestore avec long polling pour éviter les erreurs QUIC et réseau instable
-export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-});
-
+export const db = getFirestore(app);
 export const auth = getAuth(app);

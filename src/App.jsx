@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { db, auth } from './firebase'
-import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, orderBy, where } from 'firebase/firestore'
+import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -13,11 +13,6 @@ import Interventions from './pages/Interventions'
 import Clients from './pages/Clients'
 import Tracking from './pages/Tracking'
 import Login from './pages/Login'
-import Home from './pages/Home'
-import About from './pages/About'
-import Tarifs from './pages/Tarifs'
-import Blog from './pages/Blog'
-import Contact from './pages/Contact'
 import './App.css'
 
 // Composant pour gérer les transitions et le scroll
@@ -55,53 +50,20 @@ function App() {
 
   // Fetch Interventions
   useEffect(() => {
-    if (!user) {
-      setInterventions([])
-      return
-    }
-
-    // Filtrer par userId pour respecter les règles de sécurité Firestore (Owner Only)
-    const q = query(
-      collection(db, 'interventions'), 
-      where('userId', '==', user.uid),
-      orderBy('date', 'desc')
-    )
-    
-    const unsubscribe = onSnapshot(q, 
-      (snapshot) => {
-        setInterventions(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
-      },
-      (error) => {
-        // Si l'erreur est liée à un index manquant, Firestore fournit un lien dans la console
-        console.error("❌ Firestore Error (interventions):", error.code, error.message)
-      }
-    )
+    const q = query(collection(db, 'interventions'), orderBy('date', 'desc'))
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setInterventions(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+    })
     return () => unsubscribe()
-  }, [user])
+  }, [])
 
   // Fetch Clients
   useEffect(() => {
-    if (!user) {
-      setClients([])
-      return
-    }
-
-    // Filtrer par userId pour respecter les règles de sécurité Firestore (Owner Only)
-    const q = query(
-      collection(db, 'clients'),
-      where('userId', '==', user.uid)
-    )
-
-    const unsubscribe = onSnapshot(q, 
-      (snapshot) => {
-        setClients(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
-      },
-      (error) => {
-        console.error("❌ Firestore Error (clients):", error.code, error.message)
-      }
-    )
+    const unsubscribe = onSnapshot(collection(db, 'clients'), (snapshot) => {
+      setClients(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+    })
     return () => unsubscribe()
-  }, [user])
+  }, [])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -270,31 +232,23 @@ function App() {
         />
         <main className="app-content">
           <Routes>
-            {/* Routes Publiques */}
-            <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
-            <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
-            <Route path="/tarifs" element={<PageWrapper><Tarifs /></PageWrapper>} />
-            <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
-            <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
-            <Route path="/suivi" element={<PageWrapper><Tracking interventions={interventions} /></PageWrapper>} />
             <Route path="/login" element={<Login />} />
-
-            {/* Routes Administration (Protégées) */}
-            <Route path="/admin" element={
+            <Route path="/" element={
               <ProtectedRoute>
                 <PageWrapper><Dashboard interventions={interventions} clients={clients} /></PageWrapper>
               </ProtectedRoute>
             } />
-            <Route path="/admin/interventions" element={
+            <Route path="/interventions" element={
               <ProtectedRoute>
                 <PageWrapper><Interventions interventions={interventions} onAdd={addIntervention} onDelete={deleteIntervention} onUpdateStatus={updateInterventionStatus} /></PageWrapper>
               </ProtectedRoute>
             } />
-            <Route path="/admin/clients" element={
+            <Route path="/clients" element={
               <ProtectedRoute>
                 <PageWrapper><Clients clients={clients} interventions={interventions} onAdd={addClient} onDelete={deleteClient} /></PageWrapper>
               </ProtectedRoute>
             } />
+            <Route path="/suivi" element={<PageWrapper><Tracking interventions={interventions} /></PageWrapper>} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>

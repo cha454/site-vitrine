@@ -1,25 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { auth } from '../firebase'
-import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
-import './Page.css'
 import './Login.css'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-
-  // Rediriger vers le cockpit si déjà connecté
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) navigate('/admin')
-    })
-    return () => unsubscribe()
-  }, [navigate])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -27,7 +17,7 @@ function Login() {
     setError('')
     try {
       await signInWithEmailAndPassword(auth, email, password)
-      navigate('/admin')
+      navigate('/')
     } catch (err) {
       setError('Identifiants invalides. Veuillez réessayer.')
     } finally {
@@ -58,23 +48,13 @@ function Login() {
             </div>
             <div className="form-group">
               <label>Mot de passe</label>
-              <div className="password-input-wrapper">
-                <input 
-                  type={showPassword ? "text" : "password"} 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                />
-                <button 
-                  type="button" 
-                  className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-                >
-                  {showPassword ? "👁️‍🗨️" : "👁️"}
-                </button>
-              </div>
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
             </div>
             {error && <p className="error-text">{error}</p>}
             <button 
