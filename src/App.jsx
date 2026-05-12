@@ -75,9 +75,12 @@ function App() {
 
   const addIntervention = async (inter) => {
     try {
-      await addDoc(collection(db, 'interventions'), inter)
+      console.log("Firestore: Tentative d'ajout d'intervention...", inter)
+      const docRef = await addDoc(collection(db, 'interventions'), inter)
+      console.log("Firestore: Intervention ajoutée avec ID:", docRef.id)
     } catch (error) {
-      console.error("Error adding intervention:", error)
+      console.error("Firestore Error (addIntervention):", error)
+      throw error // On propage l'erreur pour que le composant puisse l'attraper
     }
   }
 
@@ -85,7 +88,7 @@ function App() {
     try {
       await deleteDoc(doc(db, 'interventions', id))
     } catch (error) {
-      console.error("Error deleting intervention:", error)
+      console.error("Firestore Error (deleteIntervention):", error)
     }
   }
 
@@ -110,15 +113,18 @@ function App() {
         }
       }
     } catch (error) {
-      console.error("Error updating status:", error)
+      console.error("Firestore Error (updateStatus):", error)
     }
   }
 
   const addClient = async (client) => {
     try {
-      await addDoc(collection(db, 'clients'), client)
+      console.log("Firestore: Tentative d'ajout de client...", client)
+      const docRef = await addDoc(collection(db, 'clients'), client)
+      console.log("Firestore: Client ajouté avec ID:", docRef.id)
     } catch (error) {
-      console.error("Error adding client:", error)
+      console.error("Firestore Error (addClient):", error)
+      throw error // On propage l'erreur
     }
   }
 
